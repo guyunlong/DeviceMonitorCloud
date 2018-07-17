@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">双河农场</string>
+    <string name="user">输入用户名</string>
+    <string name="password">输入密码</string>
+    <string name="login">登录</string>
+    <string name="network_disable">当前设备不能连接网络，请检查设置！</string>
+    <string name="list">设备列表</string>
+    <string name="refresh">刷新</string>
+    <string name="load_failed">未能加载设备，请点击刷新按钮重新加载！</string>
+    <string name="offline">当前设备处于离线状态，不能操作！</string>
+    <string name="loadding">正在加载</string>
+    <string name="fluency">流畅</string>
+    <string name="Balanced">均衡</string>
+    <string name="hd">清晰</string>
+    <string name="on">在线</string>
+    <string name="off">离线</string>
+</resources>

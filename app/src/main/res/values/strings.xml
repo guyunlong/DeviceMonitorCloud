@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">双河农场</string>
+    <string name="user">Input user</string>
+    <string name="password">Input password</string>
+    <string name="login">Login</string>
+    <string name="network_disable">The device can not connect to network,please check settings!</string>
+    <string name="list">Camera List</string>
+    <string name="refresh">refresh</string>
+    <string name="load_failed">Failed to load lists,please click refresh for reloading</string>
+    <string name="offline">Current camera is off line!</string>
+    <string name="loadding">Loading</string>
+    <string name="fluency">Fluency</string>
+    <string name="Balanced">Balanced</string>
+    <string name="hd">HD</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+</resources>

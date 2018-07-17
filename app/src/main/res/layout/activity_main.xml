@@ -1,0 +1,174 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gyl.rtmpplayer.MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000" >
+
+
+
+
+        <com.pili.pldroid.player.widget.VideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            />
+        <View
+            android:id="@+id/clickview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            />
+
+        <ProgressBar
+            android:id="@+id/probar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TableLayout
+            android:id="@+id/ctltop"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:background="#ee666666" >
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_marginTop="3dp"
+                android:layout_height="44dp" >
+
+                <TextView
+                    android:id="@+id/resolution"
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginLeft="20dp"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@drawable/text_ptz_color"
+                    android:textSize="20sp" >
+                </TextView>
+                
+                <ImageButton
+                    android:id="@+id/exitbutton"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="120dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:onClick="onClose"
+                    android:src="@drawable/exitbutton" >
+                </ImageButton>
+
+               
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/ctlBottom"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="#ee666666" >
+
+            <TableRow
+                android:id="@+id/row1"
+                android:layout_width="fill_parent"
+                android:layout_marginTop="3dp"
+                android:layout_height="44dp" >
+
+                <ImageButton
+                    android:id="@+id/ptz1"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_up" >
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/ptz2"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_down" >
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/ptz3"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_left" >
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/ptz4"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_right" />
+
+                <ImageButton
+                    android:id="@+id/ptz5"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_zoom1" >
+                </ImageButton>
+
+                <ImageButton
+                    android:id="@+id/ptz6"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ptz_zoom0" >
+                </ImageButton>
+                <ImageButton
+                    android:id="@+id/preset"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="#00666666"
+                    android:clickable="true"
+                    android:scaleType="fitXY"
+                    android:onClick="onPreset"
+                    android:visibility="gone"
+                    android:src="@drawable/ptz_preset" >
+                </ImageButton>
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
+</RelativeLayout>
