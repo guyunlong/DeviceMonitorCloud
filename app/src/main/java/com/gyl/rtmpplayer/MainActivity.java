@@ -83,6 +83,19 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 	String uid;
 
 	private CharSequence[] items = new CharSequence[3];
+
+	Handler handler_vid = new Handler();
+	Runnable runnable_vid = new Runnable() {
+		@Override
+		public void run() {
+		if (mVideoView != null ) {
+			mVideoView.start();
+		}
+
+		}
+	};
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -179,9 +192,9 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 		super.onResume();
 		entry = true;
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		if (mVideoView != null ) {
-			mVideoView.start();
-		}
+//		if (mVideoView != null ) {
+//			mVideoView.start();
+//		}
 	}
 	@Override
 	public void onPause() {
@@ -453,7 +466,8 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 								  byte[] responseBody) {
 				// TODO Auto-generated method stub
 
-
+				//1秒后，打开视频
+				handler_vid.postDelayed(runnable_vid,1500);
 			}
 
 			@Override
