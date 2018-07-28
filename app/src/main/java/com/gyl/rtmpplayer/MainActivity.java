@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -29,31 +31,27 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.Util.Utils;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.pili.pldroid.player.AVOptions;
-import com.pili.pldroid.player.widget.VideoView;
+import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.player.widget.PLVideoView;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import tv.danmaku.ijk.media.player.IMediaPlayer;
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class MainActivity extends Activity implements OnTouchListener,OnClickListener, IjkMediaPlayer.OnCompletionListener,
-		IjkMediaPlayer.OnInfoListener,
-		IjkMediaPlayer.OnErrorListener,
-		IjkMediaPlayer.OnVideoSizeChangedListener,
-		IjkMediaPlayer.OnPreparedListener{
+public class MainActivity extends Activity implements OnTouchListener,OnClickListener{
 
 	String TAG = "MainActivityTag";
 
 	//private MediaController mMediaController;
-	private VideoView mVideoView;
+	private PLVideoView mVideoView;
 	private View clickView;
 	private ProgressBar probar;
 	String rtmpUrl ;
@@ -154,39 +152,57 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 
 		//关于视频内容
 		//mMediaController = new MediaController(this, false, false);
-		mVideoView = (VideoView) findViewById(R.id.video_view);
+		mVideoView = (PLVideoView) findViewById(R.id.video_view);
+		setMediaPlayer();
 		clickView = findViewById(R.id.clickview);
 		//mMediaController.setMediaPlayer(mVideoView);
 		//mVideoView.setMediaController(mMediaController);
-		AVOptions options = new AVOptions();
-		options.setInteger(AVOptions.KEY_MEDIACODEC, 0); // 1 -> enable, 0 -> disable
 
 
-		if (true) {
-			options.setInteger(AVOptions.KEY_BUFFER_TIME, 100); // the unit of buffer time is ms
-			options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000); // the unit of timeout is ms
-			options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
-			options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
-		}
 
-		mVideoView.setAVOptions(options);
 
-		mVideoView.setVideoPath(rtmpUrl);
 
-		mVideoView.setOnErrorListener(this);
-		mVideoView.setOnCompletionListener(this);
-		mVideoView.setOnInfoListener(this);
-		mVideoView.setOnPreparedListener(this);
-		mVideoView.setOnVideoSizeChangedListener(this);
 
 		//mVideoView.requestFocus();
 		clickView.setOnClickListener(this);
-		probar = (ProgressBar) findViewById(R.id.probar);
-		mVideoView.setMediaBufferingIndicator(probar);
-		probar.setVisibility(View.VISIBLE);
+
 
 
 	}
+
+	void setMediaPlayer(){
+
+		mVideoView.setVideoPath(rtmpUrl);
+
+		AVOptions options = new AVOptions();
+
+		// the unit of timeout is ms
+		options.setInteger(AVOptions.KEY_BUFFER_TIME, 100);
+		options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+		options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
+		options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 0);
+		options.setInteger(AVOptions.KEY_MAX_CACHE_BUFFER_DURATION, 0);
+		options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
+		options.setInteger(AVOptions.KEY_MEDIACODEC, 0);
+		options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+
+		// whether start play automatically after prepared, default value is 1
+		options.setInteger(AVOptions.KEY_START_ON_PREPARED, 1);
+		mVideoView.setAVOptions(options);
+		// Set some listeners
+		mVideoView.setOnInfoListener(mOnInfoListener);
+		mVideoView.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
+		mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
+		mVideoView.setOnCompletionListener(mOnCompletionListener);
+		mVideoView.setOnSeekCompleteListener(mOnSeekCompleteListener);
+		mVideoView.setOnErrorListener(mOnErrorListener);
+
+		probar = (ProgressBar) findViewById(R.id.probar);
+		probar.setVisibility(View.VISIBLE);
+
+	}
+
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -327,34 +343,7 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 	}
 
 
-	@Override
-	public void onCompletion(IMediaPlayer iMediaPlayer) {
-		probar.setVisibility(View.GONE);
-	}
 
-	@Override
-	public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-		probar.setVisibility(View.GONE);
-		return false;
-	}
-
-	@Override
-	public boolean onInfo(IMediaPlayer iMediaPlayer, int i, int i1) {
-		return false;
-	}
-
-	@Override
-	public void onPrepared(IMediaPlayer iMediaPlayer) {
-		//Utils.showToast(this,"视频信息已加载完毕，可能需要额外3到5秒加载关键帧");
-		probar.setVisibility(View.GONE);
-
-	}
-
-	@Override
-	public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int i, int i1, int i2, int i3) {
-		//probar.setVisibility(View.GONE);
-
-	}
 	void ptz_control(int type){
 		AsyncHttpClient client = new AsyncHttpClient();
 		//http://222.186.24.219:1936/svr.php?act=cts&bid=1436196841&pm1=2&pm2=4
@@ -684,5 +673,133 @@ public class MainActivity extends Activity implements OnTouchListener,OnClickLis
 		}
 
 	}
+
+
+	private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
+		@Override
+		public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, int extra) {
+			Log.d(TAG, "onInfo: " + what + ", " + extra);
+			probar.setVisibility(View.GONE);
+			return false;
+		}
+	};
+
+	private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
+		@Override
+		public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
+			boolean isNeedReconnect = false;
+			Log.e(TAG, "Error happened, errorCode = " + errorCode);
+			probar.setVisibility(View.GONE);
+			switch (errorCode) {
+				case PLMediaPlayer.ERROR_CODE_INVALID_URI:
+					showToastTips("Invalid URL !");
+					break;
+				case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
+					showToastTips("404 resource not found !");
+					break;
+				case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
+					showToastTips("Connection refused !");
+					break;
+				case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
+					showToastTips("Connection timeout !");
+					isNeedReconnect = true;
+					break;
+				case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
+					showToastTips("Empty playlist !");
+					break;
+				case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
+					showToastTips("Stream disconnected !");
+					isNeedReconnect = true;
+					break;
+				case PLMediaPlayer.ERROR_CODE_IO_ERROR:
+					showToastTips("Network IO Error !");
+					isNeedReconnect = true;
+					break;
+				case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
+					showToastTips("Unauthorized Error !");
+					break;
+				case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
+					showToastTips("Prepare timeout !");
+					isNeedReconnect = true;
+					break;
+				case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
+					showToastTips("Read frame timeout !");
+					isNeedReconnect = true;
+					break;
+				case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+					break;
+				default:
+					showToastTips("unknown error !");
+					break;
+			}
+			// Todo pls handle the error status here, reconnect or call finish()
+			if (isNeedReconnect) {
+				sendReconnectMessage();
+			} else {
+				finish();
+			}
+			// Return true means the error has been handled
+			// If return false, then `onCompletion` will be called
+			return true;
+		}
+	};
+
+	private void sendReconnectMessage() {
+		showToastTips("正在重连...");
+		mHandler.removeCallbacksAndMessages(null);
+		mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
+	}
+	protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+		@Override
+		public void handleMessage(Message msg) {
+			mVideoView.setVideoPath(rtmpUrl);
+			mVideoView.start();
+		}
+	};
+
+	private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
+		@Override
+		public void onCompletion(PLMediaPlayer plMediaPlayer) {
+			Log.d(TAG, "Play Completed !");
+			showToastTips("Play Completed !");
+			finish();
+		}
+	};
+	private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
+		@Override
+		public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height) {
+			Log.d(TAG, "onVideoSizeChanged: " + width + "," + height);
+		}
+	};
+	private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
+		@Override
+		public void onBufferingUpdate(PLMediaPlayer plMediaPlayer, int precent) {
+			Log.d(TAG, "onBufferingUpdate: " + precent);
+			probar.setVisibility(View.GONE);
+		}
+	};
+
+	private void showToastTips(final String tips) {
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (mToast != null) {
+					mToast.cancel();
+				}
+				mToast = Toast.makeText(MainActivity.this, tips, Toast.LENGTH_SHORT);
+				mToast.show();
+			}
+		});
+	}
+	private PLMediaPlayer.OnSeekCompleteListener mOnSeekCompleteListener = new PLMediaPlayer.OnSeekCompleteListener() {
+		@Override
+		public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
+			Log.d(TAG, "onSeekComplete !");
+		};
+	};
+	private static final int MESSAGE_ID_RECONNECTING = 0x01;
+	private Toast mToast = null;
+
 }
 
