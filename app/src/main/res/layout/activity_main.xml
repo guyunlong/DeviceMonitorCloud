@@ -23,6 +23,16 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             />
+
+
+        <TextView
+            android:id="@+id/mStatInfoTextView"
+            android:textColor="#0000ff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="60dp"/>
+
         <View
             android:id="@+id/clickview"
             android:layout_width="match_parent"
